@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>選ばれる起業家どうぶつ診断</title>
+<style>
+  :root{
+    --bg:#f7f1e8;
+    --card:#fffdfa;
+    --copper:#b5713f;
+    --copper-dark:#8f5327;
+    --text:#4a3c30;
+    --sub:#8a7a68;
+    --line:#e6d9c6;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f7f1e8 0%,#f0e6d6 100%);
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+    overscroll-behavior:none;
+  }
+  .app{
+    max-width:820px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:32px 24px 60px;
+  }
+  .header{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .header .paw{font-size:34px;}
+  .header h1{
+    font-size:22px;
+    margin:6px 0 4px;
+    color:var(--copper-dark);
+    letter-spacing:0.02em;
+  }
+  .header p{
+    font-size:14px;
+    color:var(--sub);
+    margin:0;
+  }
+  .progress{
+    display:flex;
+    gap:8px;
+    margin-bottom:26px;
+  }
+  .progress .dot{
+    width:36px;height:6px;border-radius:4px;
+    background:var(--line);
+    transition:background .3s;
+  }
+  .progress .dot.active{background:var(--copper);}
+  .card{
+    background:var(--card);
+    border-radius:28px;
+    box-shadow:0 10px 30px rgba(150,110,70,0.12);
+    padding:44px 36px;
+    width:100%;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .q-num{
+    font-size:13px;
+    color:var(--copper);
+    font-weight:bold;
+    letter-spacing:0.15em;
+    margin-bottom:14px;
+  }
+  .q-text{
+    font-size:23px;
+    line-height:1.75;
+    margin:0 0 40px;
+    white-space:pre-line;
+    font-weight:600;
+  }
+  .btn-row{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+  }
+  .btn{
+    flex:1;
+    max-width:220px;
+    padding:26px 0;
+    font-size:24px;
+    font-weight:bold;
+    border-radius:20px;
+    border:none;
+    cursor:pointer;
+    transition:transform .15s, box-shadow .15s;
+    -webkit-user-select:none;user-select:none;
+  }
+  .btn:active{transform:scale(0.95);}
+  .btn.yes{
+    background:linear-gradient(180deg,#c98a54,#b5713f);
+    color:#fff;
+    box-shadow:0 6px 16px rgba(181,113,63,0.35);
+  }
+  .btn.no{
+    background:#fff;
+    color:var(--copper-dark);
+    border:2px solid var(--line);
+  }
+  .back{
+    margin-top:26px;
+    font-size:14px;
+    color:var(--sub);
+    background:none;border:none;cursor:pointer;
+    text-decoration:underline;
+  }
+  /* result screen */
+  .result-emoji{font-size:76px;margin-bottom:6px;}
+  .result-type{
+    font-size:26px;font-weight:bold;color:var(--copper-dark);
+    margin-bottom:2px;
+  }
+  .result-cat{
+    font-size:14px;color:var(--sub);margin-bottom:22px;
+  }
+  .result-desc{
+    font-size:16px;line-height:1.8;margin-bottom:24px;
+    background:#faf4ea;border-radius:16px;padding:18px 20px;
+    text-align:left;
+  }
+  .action-label{
+    font-size:13px;color:var(--copper);font-weight:bold;
+    letter-spacing:0.1em;margin-bottom:8px;
+  }
+  .action-box{
+    font-size:19px;font-weight:bold;line-height:1.7;
+    background:linear-gradient(180deg,#fff,#faf4ea);
+    border:2px dashed var(--copper);
+    border-radius:18px;
+    padding:22px 20px;
+    margin-bottom:26px;
+  }
+  .worry-list{
+    text-align:left;
+    margin:0 0 30px;
+  }
+  .worry-item{
+    font-size:15px;
+    color:var(--text);
+    line-height:1.9;
+    padding:10px 16px;
+    background:#faf4ea;
+    border-radius:12px;
+    margin-bottom:8px;
+  }
+  .restart{
+    padding:18px 40px;
+    font-size:17px;font-weight:bold;
+    border-radius:16px;
+    border:none;
+    background:var(--copper-dark);
+    color:#fff;
+    cursor:pointer;
+  }
+  .footer-note{
+    margin-top:26px;
+    font-size:12px;
+    color:var(--sub);
+    text-align:center;
+  }
+  /* entry form */
+  .field{
+    text-align:left;
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    color:var(--copper-dark);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    font-size:18px;
+    padding:14px 16px;
+    border-radius:12px;
+    border:2px solid var(--line);
+    background:#fff;
+    color:var(--text);
+    font-family:inherit;
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--copper);
+  }
+  .start-btn{
+    width:100%;
+    margin-top:10px;
+    padding:20px 0;
+    font-size:20px;
+    font-weight:bold;
+    border-radius:18px;
+    border:none;
+    background:linear-gradient(180deg,#c98a54,#b5713f);
+    color:#fff;
+    box-shadow:0 6px 16px rgba(181,113,63,0.35);
+    cursor:pointer;
+  }
+  .start-btn:active{transform:scale(0.98);}
+  .field-error{
+    color:#b5473f;
+    font-size:13px;
+    margin-top:-10px;
+    margin-bottom:16px;
+    display:none;
+  }
+  .export-link{
+    position:fixed;
+    bottom:10px;
+    right:14px;
+    font-size:11px;
+    color:var(--sub);
+    opacity:0.45;
+    cursor:pointer;
+    -webkit-user-select:none;user-select:none;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="paw">🐾</div>
+    <h1>選ばれる起業家どうぶつ診断</h1>
+    <p>Yes / No で答えるだけ、あなたのタイプが分かります</p>
+  </div>
+
+  <div class="progress" id="progress">
+    <div class="dot" data-i="0"></div>
+    <div class="dot" data-i="1"></div>
+    <div class="dot" data-i="2"></div>
+    <div class="dot" data-i="3"></div>
+  </div>
+
+  <div class="card" id="card"></div>
+</div>
+<div class="export-link" onclick="exportCSV()" id="exportLink">CSV書き出し</div>
+
+<script>
+const questions = [
+  "最近、\"初めまして\"の人から\n問い合わせや申し込み、あった？",
+  "お客様の声・実績を、\nSNSやプロフに\"見える形\"で出してる？",
+  "「イチオシはこれ！」って\nひとつ即答できる？",
+  "一度のお客さんが、また来てくれる・\n紹介してくれる流れ、ある？"
+];
+
+const results = {
+  usagi: {
+    emoji:"🐰", type:"照れ屋うさぎ", cat:"認知タイプ",
+    desc:"実力あるのに恥ずかしがり屋。まだ知られていない段階です。",
+    action:"プロフィールに\n「ひとこと肩書き」をつける",
+    worries:[
+      "発信してるのに反応が薄い…",
+      "何て名乗ればいいか分からない",
+      "自分を売り込むのが苦手"
+    ]
+  },
+  neko: {
+    emoji:"🐱", type:"ツンデレねこ", cat:"信頼タイプ",
+    desc:"魅力的で知られている。けど距離があって、あと一歩で選ばれない。",
+    action:"お客様の声・実績を\n1つ、表に出す",
+    worries:[
+      "興味は持たれるけど申込みに繋がらない",
+      "実績はあるのに伝え方が分からない",
+      "「なんとなく良さそう」で止まってしまう"
+    ]
+  },
+  risu: {
+    emoji:"🐿️", type:"ためこみリス", cat:"商品タイプ",
+    desc:"どんぐりみたいに何でも抱える。まだ絞れていない段階です。",
+    action:"イチオシを1つに絞って\n言い切る",
+    worries:[
+      "メニューが多すぎて選んでもらえない",
+      "「結局何が得意なの？」と聞かれる",
+      "全部大事に見えて絞れない"
+    ]
+  },
+  ookami: {
+    emoji:"🐺", type:"一匹オオカミ", cat:"ファン化タイプ",
+    desc:"売れる実力あり。けど一人で狩り続けて、仲間がいない。",
+    action:"買った人に\n「次の一歩」を用意する\n（リピート・紹介の流れ）",
+    worries:[
+      "新規は取れるけどリピートがない",
+      "紹介をお願いするタイミングが分からない",
+      "一人で全部抱えて疲れている"
+    ]
+  },
+  lion: {
+    emoji:"🦁", type:"どうどうライオン", cat:"オールクリア！",
+    desc:"認知・信頼・商品・ファン、ぜんぶOKな頼れる経営者さん。",
+    action:"「自分が動かんでも回る」\n仕組み化\n（チーム化・単価UP・スケール）",
+    worries:[
+      "自分が動かないと売上が止まる",
+      "スケールしたいけど何から手をつけるか分からない",
+      "チーム化のイメージが湧かない"
+    ]
+  }
+};
+
+let step = 0;
+let answers = [];
+let currentEntry = null;
+let entries = JSON.parse(localStorage.getItem('shindanEntries') || '[]');
+
+function renderEntryForm(){
+  document.getElementById('progress').style.display = 'none';
+  const card = document.getElementById('card');
+  card.innerHTML = `
+    <div class="q-num">ご入力ください</div>
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" id="in-name" placeholder="山田 花子">
+    </div>
+    <div class="field">
+      <label>お仕事・屋号</label>
+      <input type="text" id="in-job" placeholder="例）エステサロン経営">
+    </div>
+    <div class="field-error" id="entry-error">お名前を入力してください</div>
+    <button class="start-btn" onclick="startDiagnosis()">診断スタート</button>
+  `;
+}
+
+function startDiagnosis(){
+  const name = document.getElementById('in-name').value.trim();
+  const job = document.getElementById('in-job').value.trim();
+  const errorEl = document.getElementById('entry-error');
+  if(!name){
+    errorEl.style.display = 'block';
+    return;
+  }
+  currentEntry = { date: new Date().toLocaleString('ja-JP'), name, job, type:'' };
+  step = 0;
+  answers = [];
+  renderQuestion();
+}
+
+function renderProgress(){
+  document.querySelectorAll('.progress .dot').forEach((d,i)=>{
+    d.classList.toggle('active', i < step);
+  });
+}
+
+function renderQuestion(){
+  document.getElementById('progress').style.display = 'flex';
+  renderProgress();
+  const card = document.getElementById('card');
+  card.innerHTML = `
+    <div class="q-num">Q${step+1} / 4</div>
+    <div class="q-text">${questions[step]}</div>
+    <div class="btn-row">
+      <button class="btn no" onclick="answer('no')">NO</button>
+      <button class="btn yes" onclick="answer('yes')">YES</button>
+    </div>
+    ${step>0 ? '<button class="back" onclick="goBack()">ひとつ前に戻る</button>' : ''}
+  `;
+}
+
+function answer(a){
+  answers.push(a);
+  step++;
+  if(step >= 4){
+    judgeResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function goBack(){
+  step--;
+  answers.pop();
+  renderQuestion();
+}
+
+function judgeResult(){
+  const keys = ['usagi','neko','risu','ookami'];
+  const firstNo = answers.findIndex(a => a === 'no');
+  const key = firstNo === -1 ? 'lion' : keys[firstNo];
+  showResult(key);
+}
+
+function showResult(key){
+  document.getElementById('progress').style.display = 'none';
+  const r = results[key];
+  const card = document.getElementById('card');
+  card.innerHTML = `
+    <div class="result-emoji">${r.emoji}</div>
+    <div class="result-type">${r.type}</div>
+    <div class="result-cat">${r.cat}</div>
+    <div class="result-desc">${r.desc}</div>
+    <div class="action-label">今日からやること、ひとつ</div>
+    <div class="action-box">${r.action}</div>
+    <div class="action-label">こんなこと、困ってない？</div>
+    <div class="worry-list">
+      ${r.worries.map(w => `<div class="worry-item">・${w}</div>`).join('')}
+    </div>
+    <button class="restart" onclick="restart()">次の人の診断をする</button>
+    <div class="footer-note">選ばれる起業家どうぶつ診断</div>
+  `;
+
+  if(currentEntry){
+    currentEntry.type = r.type;
+    entries.push(currentEntry);
+    localStorage.setItem('shindanEntries', JSON.stringify(entries));
+    currentEntry = null;
+    updateExportLabel();
+  }
+}
+
+function restart(){
+  step = 0;
+  answers = [];
+  renderEntryForm();
+}
+
+function updateExportLabel(){
+  document.getElementById('exportLink').textContent = `CSV書き出し (${entries.length}件)`;
+}
+
+function exportCSV(){
+  if(entries.length === 0){
+    alert('まだデータがありません');
+    return;
+  }
+  const header = ['日時','お名前','お仕事・屋号','診断タイプ'];
+  const rows = entries.map(e => [e.date, e.name, e.job, e.type]);
+  const csvBody = [header, ...rows]
+    .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+  const blob = new Blob(['﻿' + csvBody], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `どうぶつ診断_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+updateExportLabel();
+renderEntryForm();
+</script>
+</body>
+</html>
